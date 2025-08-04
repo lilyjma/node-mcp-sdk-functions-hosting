@@ -1,0 +1,53 @@
+<!--
+    API-level policy for MCP Weather API
+    This policy handles OAuth validation for all MCP endpoints except PRM
+-->
+<policies>
+    <inbound>
+        <base />
+        <!-- Validate OAuth token using Azure AD -->
+        <validate-azure-ad-token tenant-id="{{McpTenantId}}" failed-validation-error-message="Unauthorized. Access token is missing or invalid." failed-validation-httpcode="401">
+            <client-application-ids>
+                <application-id>{{McpClientId}}</application-id>
+            </client-application-ids>
+        </validate-azure-ad-token>
+        
+        <!-- Set backend service URL -->
+        <set-backend-service base-url="https://{{request.matchedParameters['functionAppName']}}.azurewebsites.net/" />
+        
+        <!-- Forward Authorization header -->
+        <set-header name="Authorization" exists-action="override">
+            <value>@("Bearer " + context.Request.Headers.GetValueOrDefault("Authorization", "").Replace("Bearer ", ""))</value>
+        </set-header>
+        
+        <!-- Add correlation ID for tracking -->
+        <set-header name="X-Correlation-ID" exists-action="override">
+            <value>@(context.RequestId)</value>
+        </set-header>
+    </inbound>
+    <backend>
+        <base />
+    </backend>
+    <outbound>
+        <base />
+        <!-- Add CORS headers if needed -->
+        <cors allow-credentials="true">
+            <allowed-origins>
+                <origin>*</origin>
+            </allowed-origins>
+            <allowed-methods>
+                <method>*</method>
+            </allowed-methods>
+            <allowed-headers>
+                <header>*</header>
+            </allowed-headers>
+        </cors>
+    </outbound>
+    <on-error>
+        <base />
+        <!-- Log errors for debugging -->
+        <set-header name="Error-Source" exists-action="override">
+            <value>APIM-MCP-API</value>
+        </set-header>
+    </on-error>
+</policies>
