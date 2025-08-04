@@ -47,7 +47,7 @@ Test on Visual Studio Code (or your favorite client):
 ## Prepare Node MCP server for deployment 
 If you have already have server, this section provides guidance on how to prepare the MCP server for deployment as a custom handler. 
 
-> ![NOTE]
+> [!NOTE]
 > Before moving on to the next steps, check that your server is **stateless** and uses the streamable **HTTP transport**.
 
 ### Approach 1: Use experimental prompt
