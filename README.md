@@ -47,7 +47,7 @@ Test on Visual Studio Code (or your favorite client):
 ## Prepare Node MCP server for deployment 
 If you have already have server, this section provides guidance on how to prepare the MCP server for deployment as a custom handler. 
 
-> ![IMPORTANT]
+> [!NOTE]
 > Before moving on to the next steps, check that your server is **stateless** and uses the streamable **HTTP transport**.
 
 ### Approach 1: Use experimental prompt
@@ -135,6 +135,7 @@ Install [Azure Functions Core Tools](https://learn.microsoft.com/azure/azure-fun
 1. [Create a Function app](https://learn.microsoft.com/azure/azure-functions/functions-create-function-app-portal?tabs=core-tools&pivots=flex-consumption-plan) hosted on the **Flex Consumption plan** and related resources. 
  - Choose **Node 22** as the runtime stack and version. 
  - On *Networking* tab, choose "Enable public access" to allow all IPs to access the app. This helps with the deployment step and allows for accessing the app (i.e. server) during testing. For production scenarios, it's recommended that you configure IP allowlist or set up VNET instead.
+
 1. Deploy the server by running the following command in the root directory:
     ```azcli
     func azure functionapp publish <function app name>
