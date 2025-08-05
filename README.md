@@ -17,6 +17,18 @@ For those who have already built servers with Anthropic's MCP SDKs, it's also po
   <img src="./media/function_hosting.png" alt="Diagram showing hosting of Function app and custom handler" width="500">
 </div>
 
+
+## Prerequisites
+You'll need an [Azure subscription](../guides/developer/azure-developer-guide.md#understanding-accounts-subscriptions-and-billing). If you don't already have an account, [create a free one](https://azure.microsoft.com/free/dotnet/) before you begin.
+
+Ensure you have the following installed: 
+
+* [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd)
+* [Azure Functions Core Tools](https://learn.microsoft.com/azure/azure-functions/functions-run-local?tabs=windows%2Cisolated-process%2Cnode-v4%2Cpython-v2%2Chttp-trigger%2Ccontainer-apps&pivots=programming-language-typescript) if you haven't already. 
+* [Visual Studio Code](https://code.visualstudio.com/) 
+* [Azure Functions extension on Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azurefunctions) 
+
+
 ## Quickstart
 > [!TIP]
 > If you want to get started quickly or you don't have a server yet, follow the instructions in this section. If you already have a server, skip to [Prepare Node MCP server for deployment](#prepare-node-mcp-server-for-deployment).
@@ -27,7 +39,6 @@ This repo has a sample server that contains the required Functions artifacts to 
     ```
     git clone https://github.com/Azure-Samples/node-mcp-sdk-functions-hosting.git
     ```
-1. Install the [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd)
 1. Open up the sample in VSCode and run `azd up` in the root directory
 
 The last step will create a resource group with all the required resources, as well as deploy the server to Azure.
@@ -106,7 +117,7 @@ You can manually take the steps below to prepare for custom handler deployment, 
     {
         "IsEncrypted": false,
         "Values": {
-            "FUNCTIONS_WORKER_RUNTIME": "node"
+            "FUNCTIONS_WORKER_RUNTIME": "custom"
         }
     }
     ```
@@ -126,8 +137,6 @@ That's it! You're ready to run your MCP server locally and deploy to Azure Funct
 
 ### Test local server 
 
-Install [Azure Functions Core Tools](https://learn.microsoft.com/azure/azure-functions/functions-run-local?tabs=windows%2Cisolated-process%2Cnode-v4%2Cpython-v2%2Chttp-trigger%2Ccontainer-apps&pivots=programming-language-typescript) if you haven't already. 
-
 1. In the root directory, run `func start` to run the MCP server locally as a custom handler. The server is treated as an http trigger, so there will be an endpoint returned that looks like `http://localhost:7071/{*route}`.
 1. Connect to the MCP server by replacing `{*route}` with `mcp`.
 
@@ -135,12 +144,12 @@ Install [Azure Functions Core Tools](https://learn.microsoft.com/azure/azure-fun
 1. [Create a Function app](https://learn.microsoft.com/azure/azure-functions/functions-create-function-app-portal?tabs=core-tools&pivots=flex-consumption-plan) hosted on the **Flex Consumption plan** and related resources. 
     - Choose **Node 22** as the runtime stack and version. 
     - On *Networking* tab, choose "Enable public access" to allow all IPs to access the app. This helps with the deployment step and allows for accessing the app (i.e. server) during testing. For production scenarios, it's recommended that you configure IP allowlist or set up VNET instead.
-1. Deploy the server by running the following command in the root directory:
-    ```azcli
-    func azure functionapp publish <function app name>
+1. Open the command palette (`cntrl/cmd+shift+p`) and search for **Azure Functions: Deploy to Function app**. 
+1. Choose your Azure subscription and the function app created in Step 1. Select **Deploy** when prompted. 
+1. After deployment completes, follow steps in [Test deployed server](#test-deployed-server) to test. While the app is publically accessable, connecting to the server endpoint still requires a function key. Also, remember to replace `{*route}` with `mcp`: 
     ```
-1. Follow steps in [Test deployed server](#test-deployed-server) to test. 
-
+    https://<app name>.<region>.azurewebsites.net/api/mcp?code=<function key>
+    ```
 
 ## Server authorization using Azure API Management (APIM)
 In addition to protecting server access through function keys, you can also leverage APIM to add server authorization with Entra ID. 
