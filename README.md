@@ -133,8 +133,8 @@ Install [Azure Functions Core Tools](https://learn.microsoft.com/azure/azure-fun
 
 ## Deploy MCP server to Azure Functions
 1. [Create a Function app](https://learn.microsoft.com/azure/azure-functions/functions-create-function-app-portal?tabs=core-tools&pivots=flex-consumption-plan) hosted on the **Flex Consumption plan** and related resources. 
-   - Choose **Node 22** as the runtime stack and version. 
-   - On *Networking* tab, choose "Enable public access" to allow all IPs to access the app. This makes the deployment in next step and connect to the server for testing easy. However, this is _not_ recommended for production scenarios. 
+    - Choose **Node 22** as the runtime stack and version. 
+    - On *Networking* tab, choose "Enable public access" to allow all IPs to access the app. This helps with the deployment step and allows for accessing the app (i.e. server) during testing. For production scenarios, it's recommended that you configure IP allowlist or set up VNET instead.
 1. Deploy the server by running the following command in the root directory:
     ```azcli
     func azure functionapp publish <function app name>
@@ -143,7 +143,7 @@ Install [Azure Functions Core Tools](https://learn.microsoft.com/azure/azure-fun
 
 
 ## Server authorization using Azure API Management (APIM)
-In addition to protecting your server though function keys, you can also leverage APIM to add server authorization with Entra ID. 
+In addition to protecting server access through function keys, you can also leverage APIM to add server authorization with Entra ID. 
 
 [TODO] 
 
