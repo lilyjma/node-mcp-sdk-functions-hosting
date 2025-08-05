@@ -1,6 +1,6 @@
 # Host remote MCP servers built with official MCP SDKs on Azure Functions
 
-This repo contains instructions and samples for running MCP server built with the Node MCP SDK on Azure Functions. The repo uses the weather sample server to demonstrate how this can be done. You can clone to run and test the server locally, follow by easy deploy with `azd up` to have it in the cloud in a few minutes. You can follow the instructions provided to manually add the required Functions related artifacts, or have Visual Studio Code's Copilot make those additions for you by using the experimental prompt provided. 
+This repo contains instructions and samples for running MCP server built with the Node MCP SDK on Azure Functions. The repo uses the weather sample server to demonstrate how this can be done. You can clone to run and test the server locally, follow by easy deploy with `azd up` to have it in the cloud in a few minutes. If you already have a server, you can follow the instructions provided to manually add the required Functions artifacts for hosting, or have Visual Studio Code's Copilot make those additions for you by using the experimental prompt provided. 
 
 Find the repo for other languages: 
 | Language (Stack) | Repo Location |
@@ -33,27 +33,31 @@ Ensure you have the following installed:
 > [!TIP]
 > If you want to get started quickly or you don't have a server yet, follow the instructions in this section. If you already have a server, skip to [Prepare Node MCP server for deployment](#prepare-node-mcp-server-for-deployment).
 
-This repo has a sample server that contains the required Functions artifacts to be run as a custom handler. It can be deployed as is by doing the following:
+The sample server in this repo contains the required Functions artifacts to be run as a custom handler and can be deployed as is. 
+
+### Run the server locally
 
 1. Clone the repo
     ```
     git clone https://github.com/Azure-Samples/node-mcp-sdk-functions-hosting.git
     ```
-1. Open up the sample in VSCode and run `azd up` in the root directory
+1. Open up the sample in VSCode, run `func start` in the root directory to start the MCP server locally. The server is treated as an http trigger, so there's an endpoint returned that looks like `http://localhost:7071/{*route}`.
+1. Open the command palette (`cntrl/cmd+shift+p`) and search for **MCP: Add server**
+1. Choose **HTTP**
+1. Connect to the MCP server by entering the endpoint, replacing `{*route}` with `mcp`.
 
-The last step will create a resource group with all the required resources, as well as deploy the server to Azure.
 
-### Test deployed server
-After deployment completes, go to the Function App resource on Azure portal to find the app's endpoint and key: Click on **function-route** -> **Get function URL** -> copy the second endpoint with Function key. It should look like:
-
-```
-https://<function app name>.azurewebsites.net/{*route}?code=<key>
-```
-
-Test on Visual Studio Code:
+### Deploy 
+1. In the root directory, and run `azd up` 
+1. After deployment completes, go to the Function App resource on Azure portal
+1. Find the app's endpoint and key by clicking on **function-route** -> **Get function URL** -> copy the second endpoint with Function key. It should look like:
+    ```
+    https://<function app name>.azurewebsites.net/{*route}?code=<key>
+    ```
+### Test in Visual Studio Code
 1. Open the command palette (`cntrl/cmd+shift+p`) and search for **MCP: Add server**
 2. Choose **HTTP**
-3. Enter the function endpoint from above, replace `{*route}` with `mcp` and `<key>` with the real access key
+3. Enter the function endpoint from above, replace `{*route}` with `mcp` 
 
 ## Prepare Node MCP server for deployment 
 If you have already have server, this section provides guidance on how to prepare the MCP server for deployment as a custom handler. 
@@ -134,11 +138,7 @@ You can manually take the steps below to prepare for custom handler deployment, 
 That's it! You're ready to run your MCP server locally and deploy to Azure Functions as a custom handler. 
 
 ### Test local server 
-
-1. In the root directory, run `func start` to run the MCP server locally as a custom handler. The server is treated as an http trigger, so there's an endpoint returned that looks like `http://localhost:7071/{*route}`.
-1. Open the command palette (`cntrl/cmd+shift+p`) and search for **MCP: Add server**
-1. Choose **HTTP**
-1. Connect to the MCP server by entering the endpoint, replacing `{*route}` with `mcp`.
+Following instructions in [Run the server locally](#run-the-server-locally) for testing. 
 
 ## Deploy MCP server to Azure Functions
 1. [Create a Function app](https://learn.microsoft.com/azure/azure-functions/functions-create-function-app-portal?tabs=core-tools&pivots=flex-consumption-plan) hosted on the **Flex Consumption plan** and related resources. 
