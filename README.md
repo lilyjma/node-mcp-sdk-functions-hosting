@@ -50,7 +50,7 @@ After deployment completes, go to the Function App resource on Azure portal to f
 https://<function app name>.azurewebsites.net/{*route}?code=<key>
 ```
 
-Test on Visual Studio Code (or your favorite client):
+Test on Visual Studio Code:
 1. Open the command palette (`cntrl/cmd+shift+p`) and search for **MCP: Add server**
 2. Choose **HTTP**
 3. Enter the function endpoint from above, replace `{*route}` with `mcp`
