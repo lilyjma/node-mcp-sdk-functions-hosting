@@ -24,7 +24,7 @@ You'll need an [Azure subscription](../guides/developer/azure-developer-guide.md
 Ensure you have the following installed: 
 
 * [Azure Developer CLI](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd)
-* [Azure Functions Core Tools](https://learn.microsoft.com/azure/azure-functions/functions-run-local?tabs=windows%2Cisolated-process%2Cnode-v4%2Cpython-v2%2Chttp-trigger%2Ccontainer-apps&pivots=programming-language-typescript) if you haven't already. 
+* [Azure Functions Core Tools](https://learn.microsoft.com/azure/azure-functions/functions-run-local?tabs=windows%2Cisolated-process%2Cnode-v4%2Cpython-v2%2Chttp-trigger%2Ccontainer-apps&pivots=programming-language-typescript) 
 * [Visual Studio Code](https://code.visualstudio.com/) 
 * [Azure Functions extension on Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azurefunctions) 
 
@@ -53,7 +53,7 @@ https://<function app name>.azurewebsites.net/{*route}?code=<key>
 Test on Visual Studio Code:
 1. Open the command palette (`cntrl/cmd+shift+p`) and search for **MCP: Add server**
 2. Choose **HTTP**
-3. Enter the function endpoint from above, replace `{*route}` with `mcp`
+3. Enter the function endpoint from above, replace `{*route}` with `mcp` and `<key>` with the real access key
 
 ## Prepare Node MCP server for deployment 
 If you have already have server, this section provides guidance on how to prepare the MCP server for deployment as a custom handler. 
@@ -87,7 +87,6 @@ You can manually take the steps below to prepare for custom handler deployment, 
         }
     }
     ```
-    >![NOTE] Use `node` instead of `npm` as the executable path because the latter is not supported today. 
 
 1. Create a folder named `function-route` in the root directory. Inside the folder, create a file named `function.json` with the following:
     ```json
@@ -123,8 +122,7 @@ You can manually take the steps below to prepare for custom handler deployment, 
     ```
     This file is where all the environment variables are kept. 
 
-1. Set custom handler port for server to listen to 
-Modify the MCP server code to listen for HTTP requests on the port specified by the `FUNCTIONS_CUSTOMHANDLER_PORT` environment variable. This is the only line of code that needs modification:
+1. Modify the MCP server code to listen for HTTP requests on the port specified by the `FUNCTIONS_CUSTOMHANDLER_PORT` environment variable. This is the only line of code that needs modification:
 
     ```typescript
     const PORT = process.env.FUNCTIONS_CUSTOMHANDLER_PORT || process.env.PORT || 3000;
@@ -137,16 +135,18 @@ That's it! You're ready to run your MCP server locally and deploy to Azure Funct
 
 ### Test local server 
 
-1. In the root directory, run `func start` to run the MCP server locally as a custom handler. The server is treated as an http trigger, so there will be an endpoint returned that looks like `http://localhost:7071/{*route}`.
-1. Connect to the MCP server by replacing `{*route}` with `mcp`.
+1. In the root directory, run `func start` to run the MCP server locally as a custom handler. The server is treated as an http trigger, so there's an endpoint returned that looks like `http://localhost:7071/{*route}`.
+1. Open the command palette (`cntrl/cmd+shift+p`) and search for **MCP: Add server**
+1. Choose **HTTP**
+1. Connect to the MCP server by entering the endpoint, replacing `{*route}` with `mcp`.
 
 ## Deploy MCP server to Azure Functions
 1. [Create a Function app](https://learn.microsoft.com/azure/azure-functions/functions-create-function-app-portal?tabs=core-tools&pivots=flex-consumption-plan) hosted on the **Flex Consumption plan** and related resources. 
     - Choose **Node 22** as the runtime stack and version. 
     - On *Networking* tab, choose "Enable public access" to allow all IPs to access the app. This helps with the deployment step and allows for accessing the app (i.e. server) during testing. For production scenarios, it's recommended that you configure IP allowlist or set up VNET instead.
-1. Open the command palette (`cntrl/cmd+shift+p`) and search for **Azure Functions: Deploy to Function app**. 
+1. Open the command palette and search for **Azure Functions: Deploy to Function app**. 
 1. Choose your Azure subscription and the function app created in Step 1. Select **Deploy** when prompted. 
-1. After deployment completes, follow steps in [Test deployed server](#test-deployed-server) to test. While the app is publically accessable, connecting to the server endpoint still requires a function key. Also, remember to replace `{*route}` with `mcp`: 
+1. After deployment completes, follow steps in [Test deployed server](#test-deployed-server). While the app is publically accessable, connecting to the server endpoint still requires a function key. Also, remember to replace `{*route}` with `mcp`: 
     ```
     https://<app name>.<region>.azurewebsites.net/api/mcp?code=<function key>
     ```
