@@ -36,7 +36,6 @@ Ensure you have the following installed:
 The sample server in this repo contains the required Functions artifacts to be run as a custom handler and can be deployed as is. 
 
 ### Run the server locally
-
 1. Clone the repo
     ```
     git clone https://github.com/Azure-Samples/node-mcp-sdk-functions-hosting.git
@@ -46,18 +45,18 @@ The sample server in this repo contains the required Functions artifacts to be r
 1. Choose **HTTP**
 1. Connect to the MCP server by entering the endpoint, replacing `{*route}` with `mcp`.
 
-
 ### Deploy 
-1. In the root directory, and run `azd up` 
+In the root directory, and run `azd up`. This command will create and deploy the app, plus other required resources.
+
+### Test in Visual Studio Code
 1. After deployment completes, go to the Function App resource on Azure portal
-1. Find the app's endpoint and key by clicking on **function-route** -> **Get function URL** -> copy the second endpoint with Function key. It should look like:
+1. Find the app's endpoint and key by clicking on **function-route** -> **Get function URL** -> copy the second endpoint with Function key. While the app is publically accessable, the server endpoint is protected and requires a function key to access it. The endpoint with key should look like:
     ```
     https://<function app name>.azurewebsites.net/{*route}?code=<key>
     ```
-### Test in Visual Studio Code
 1. Open the command palette (`cntrl/cmd+shift+p`) and search for **MCP: Add server**
-2. Choose **HTTP**
-3. Enter the function endpoint from above, replace `{*route}` with `mcp` 
+1. Choose **HTTP**
+1. Enter the function endpoint from above, replace `{*route}` with `mcp` 
 
 ## Prepare Node MCP server for deployment 
 If you have already have server, this section provides guidance on how to prepare the MCP server for deployment as a custom handler. 
@@ -146,10 +145,7 @@ Following instructions in [Run the server locally](#run-the-server-locally) for 
     - On *Networking* tab, choose "Enable public access" to allow all IPs to access the app. This helps with the deployment step and allows for accessing the app (i.e. server) during testing. For production scenarios, it's recommended that you configure IP allowlist or set up VNET instead.
 1. Open the command palette and search for **Azure Functions: Deploy to Function app**. 
 1. Choose your Azure subscription and the function app created in Step 1. Select **Deploy** when prompted. 
-1. After deployment completes, follow steps in [Test deployed server](#test-deployed-server). While the app is publically accessable, connecting to the server endpoint still requires a function key. Also, remember to replace `{*route}` with `mcp`: 
-    ```
-    https://<app name>.<region>.azurewebsites.net/api/mcp?code=<function key>
-    ```
+1. After deployment completes, follow steps in [Test in Visual Studio Code](#test-in-visual-studio-code). 
 
 ## Server authorization using Azure API Management (APIM)
 In addition to protecting server access through function keys, you can also leverage APIM to add server authorization with Entra ID. 
