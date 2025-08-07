@@ -7,18 +7,17 @@ Recently Azure Functions released the [Functions MCP extension](https://techcomm
 
 For those who have already built servers with [Anthropic's MCP SDKs](https://github.com/modelcontextprotocol/servers?tab=readme-ov-file#model-context-protocol-servers), it's also possible to host the servers on Azure Functions by running them as _custom handlers_, which are lightweight web servers that receive events from the Functions host. They allow you to host your already-built MCP servers with minimal code change and benefit from Function's bursty scale, serverless pricing model, and security features. 
 
-This repo focuses on the second hosting scenario.  
+This repo focuses on the second hosting scenario:  
 
 <div align="center">
   <img src="./media/weather_server.png" alt="Diagram showing hosting of weather server built with official MCP SDKs." width="500">
 </div>
 
-More generally speaking, you can leverage custom handlers to host apps built with your choice of frameworks and SDKs on Azure Functions. 
+More generally speaking, you can leverage custom handlers to host apps built with your choice of frameworks and SDKs on Azure Functions:
 
 <div align="center">
   <img src="./media/function_hosting.png" alt="Diagram showing hosting of Function app and custom handler apps." width="500">
 </div>
-
 
 ## Prerequisites
 You'll need an [Azure subscription](../guides/developer/azure-developer-guide.md#understanding-accounts-subscriptions-and-billing). If you don't already have an account, [create a free one](https://azure.microsoft.com/free/dotnet/) before you begin.
@@ -57,8 +56,7 @@ In addition to protecting server access through function keys, you can also leve
 
 ## Next steps
 
-### Other languages 
-Find this sample in other languages: 
+### Find this sample in other languages
 
 | Language (Stack) | Repo Location |
 |------------------|---------------|
@@ -66,4 +64,6 @@ Find this sample in other languages:
 | Python | [mcp-sdk-functions-hosting-python]() |
 
 ### Bring-your-own MCP server
-If you've already built an MCP server, follow the instructions in **BYOServer.md** to get your server deployed to Azure Functions. 
+
+If you've already built an MCP server, follow the instructions in the document [Host bring-your-own (BYO) MCP servers on Azure Functions
+](https://github.com/Azure-Samples/node-mcp-sdk-functions-hosting/blob/main/BYOServer.md). 
