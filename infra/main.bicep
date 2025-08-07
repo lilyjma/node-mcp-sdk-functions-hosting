@@ -57,12 +57,12 @@ param resourceGroupName string = ''
 param storageAccountName string = ''
 param vNetName string = ''
 @description('Id of the user identity to be used for testing and debugging. This is not required in production. Leave empty if not needed.')
-param principalId string = ''
+param principalId string = deployer().objectId
 
 var abbrs = loadJsonContent('./abbreviations.json')
 var resourceToken = toLower(uniqueString(subscription().id, environmentName, location))
 var tags = { 'azd-env-name': environmentName }
-var functionAppName = !empty(apiServiceName) ? apiServiceName : '${abbrs.webSitesFunctions}weather-mcp-${resourceToken}'
+var functionAppName = !empty(apiServiceName) ? apiServiceName : '${abbrs.webSitesFunctions}mcp-weather-${resourceToken}'
 var deploymentStorageContainerName = 'app-package-${take(functionAppName, 32)}-${take(toLower(uniqueString(functionAppName, resourceToken)), 7)}'
 
 // Organize resources in a resource group
@@ -80,7 +80,7 @@ module apiUserAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned
   params: {
     location: location
     tags: tags
-    name: !empty(apiUserAssignedIdentityName) ? apiUserAssignedIdentityName : '${abbrs.managedIdentityUserAssignedIdentities}api-${resourceToken}'
+    name: !empty(apiUserAssignedIdentityName) ? apiUserAssignedIdentityName : '${abbrs.managedIdentityUserAssignedIdentities}mcp-weather-${resourceToken}'
   }
 }
 
@@ -202,7 +202,7 @@ module storagePrivateEndpoint 'app/storage-PrivateEndpoint.bicep' = if (vnetEnab
 }
 
 // Monitor application with Azure Monitor - Log Analytics and Application Insights
-module logAnalytics 'br/public:avm/res/operational-insights/workspace:0.7.0' = {
+module logAnalytics 'br/public:avm/res/operational-insights/workspace:0.11.1' = {
   name: '${uniqueString(deployment().name, location)}-loganalytics'
   scope: rg
   params: {
@@ -213,7 +213,7 @@ module logAnalytics 'br/public:avm/res/operational-insights/workspace:0.7.0' = {
   }
 }
  
-module monitoring 'br/public:avm/res/insights/component:0.4.1' = {
+module monitoring 'br/public:avm/res/insights/component:0.6.0' = {
   name: '${uniqueString(deployment().name, location)}-appinsights'
   scope: rg
   params: {
