@@ -20,11 +20,6 @@ param enableQueue bool = false
 param enableTable bool = false
 param enableFile bool = false
 
-// MCP Configuration Parameters
-param mcpClientId string = ''
-param mcpTenantId string = ''
-param managedIdentityClientId string = ''
-
 @allowed(['SystemAssigned', 'UserAssigned'])
 param identityType string = 'UserAssigned'
 
@@ -32,20 +27,15 @@ var applicationInsightsIdentity = 'ClientId=${identityClientId};Authorization=AA
 var kind = 'functionapp,linux'
 
 // Create base application settings
-var baseAppSettings = union({
+var baseAppSettings = {
   // Only include required credential settings unconditionally
   AzureWebJobsStorage__credential: 'managedidentity'
   AzureWebJobsStorage__clientId: identityClientId
-}, !empty(applicationInsightsName) ? {
+  
   // Application Insights settings are always included
   APPLICATIONINSIGHTS_AUTHENTICATION_STRING: applicationInsightsIdentity
-  APPLICATIONINSIGHTS_CONNECTION_STRING: applicationInsights.?properties.ConnectionString ?? ''
-} : {}, !empty(mcpTenantId) && !empty(mcpClientId) ? {
-  // MCP Authorization settings
-  MCP_TENANT_ID: mcpTenantId
-  MCP_CLIENT_ID: mcpClientId
-  MCP_MANAGED_IDENTITY_CLIENT_ID: managedIdentityClientId
-} : {})
+  APPLICATIONINSIGHTS_CONNECTION_STRING: applicationInsights.properties.ConnectionString
+}
 
 // Dynamically build storage endpoint settings based on feature flags
 var blobSettings = enableBlob ? { AzureWebJobsStorage__blobServiceUri: stg.properties.primaryEndpoints.blob } : {}
